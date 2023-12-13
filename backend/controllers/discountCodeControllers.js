@@ -5,7 +5,9 @@ exports.generateDiscountCode = async (req, res) => {
   try {
     const { condition } = req.body;
 
+    // Check if condition is satisfied for generating a discount code
     if (condition) {
+      // Generate and save a new discount code
       const discountCode = new DiscountCode({ code: 'YOUR_GENERATED_CODE', used: true });
       await discountCode.save();
       res.status(200).json({ message: 'Discount code generated successfully', discountCode });
@@ -19,11 +21,12 @@ exports.generateDiscountCode = async (req, res) => {
 
 exports.getStoreStats = async (req, res) => {
   try {
+    // Calculate various store statistics
     const totalItemsPurchased = await Order.countDocuments();
     const totalPurchaseAmount = await Order.aggregate([{ $group: { _id: null, totalAmount: { $sum: '$amount' } } }]);
     const discountCodes = await DiscountCode.find();
     const totalDiscountAmount = await DiscountCode.aggregate([
-      { $match: { isActive: true } },
+      { $match: { used: false } },
       { $group: { _id: null, totalAmount: { $sum: '$amount' } } },
     ]);
 

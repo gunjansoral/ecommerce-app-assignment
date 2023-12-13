@@ -27,8 +27,6 @@ const orderSchema = new Schema({
     type: Boolean,
     default: false,
   },
-}, {
-  timestamps: true,
 });
 
 module.exports = model('Order', orderSchema);
